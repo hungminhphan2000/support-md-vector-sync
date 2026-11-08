@@ -236,8 +236,8 @@ Depends on the live one-file store above. The Playground response now demonstrat
 ### 4. Daily job — about 1 hour
 
 - [x] GitHub Actions workflow `.github/workflows/daily-optibot.yml` prepared: daily cron (`0 6 * * *` UTC) plus `workflow_dispatch`. Builds `optibot-job`, runs it with repo secrets `API_KEY` and `VECTOR_STORE_ID`, writes only `ran_at` plus count lines to `docs/last-run.txt`, and commits that file after a successful run. **Local validation:** `actionlint .github/workflows/daily-optibot.yml` exited 0.
-- [ ] Complete the first hosted daily run. The public repo and repository secrets are ready; `docs/last-run.txt` still contains a placeholder. Verify a successful run on an eligible host and publish a last-run record with `added`, `updated`, and `skipped`.
-- [x] README links relatively to `docs/last-run.txt` with a clear pending-first-run placeholder until Actions commits live counts. After the first successful run, that file shows `added`, `updated`, and `skipped`.
+- [ ] Complete the first hosted daily run. The public repo and repository secrets are ready. `docs/last-run.txt` currently contains the verified local Docker counts with `source=local_docker`; verify a successful hosted run before treating it as scheduled evidence.
+- [x] README links relatively to `docs/last-run.txt`, which shows the verified local Docker counts and clearly labels their source. After the first successful Actions run, the workflow replaces it with `source=github_actions`, a timestamp, and fresh counts.
 
 ### 5. README and repo — about 30 minutes
 

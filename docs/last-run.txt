@@ -1,7 +1,16 @@
-# Pending first run
-# This file is overwritten by .github/workflows/daily-optibot.yml after a
-# successful scheduled or manual Actions run. Until then there are no live counts.
-ran_at=pending
-added=pending
-updated=pending
-skipped=pending
+# Verified local Docker run on 2026-11-08. Hosted daily run is pending.
+# The Actions workflow replaces this file after its first successful run.
+source=local_docker
+run_date=2026-11-08
+fetched_by_id=360051014713
+refresh_articles=101
+added=0
+updated=0
+skipped=101
+failed=0
+removed_old=0
+completed_file_count=101
+in_progress_file_count=0
+failed_file_count=0
+total_file_count=101
+indexed_chunk_count_field=absent

@@ -31,10 +31,9 @@ Uploads use the vector-store default static chunking strategy:
 
 Live API responses expose `usage_bytes` and `file_counts.*`. They do **not** expose an indexed chunk count (`indexed_chunk_count_field=absent`), so embedded chunk totals cannot be logged from the published API.
 
-## Daily run log
+## Run summary
 
-Latest successful Actions summary: [docs/last-run.txt](docs/last-run.txt)  
-(pending until the first scheduled or manual workflow run commits real counts).
+[Latest verified counts](docs/last-run.txt) currently come from the local Docker run. The hosted daily run is pending; a successful Actions run will replace that file with a new timestamp and `source=github_actions`.
 
 ## Screenshot
 

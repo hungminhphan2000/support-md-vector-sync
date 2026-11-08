@@ -34,6 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           {
+            echo "source=github_actions"
             echo "ran_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             grep -E '^(added|updated|skipped|failed|removed_old|refresh_articles|completed_file_count|in_progress_file_count|failed_file_count|total_file_count|indexed_chunk_count_field)=' \
               /tmp/optibot-out.txt
