@@ -1,0 +1,42 @@
+---
+description: Work the take-home from docs/PLAN.md, within the current task, with explicit evidence
+alwaysApply: true
+---
+
+# Take-home workflow
+
+Follow `docs/PLAN.md`. Do only the task the user just asked for. Leave later checklist items untouched.
+
+Reuse `src/`, `export_articles.py`, `check_one_file.py`, and `.venv/bin/python`. Add a dependency only when the plan already calls for it.
+
+Keep solutions small. After a task, update the matching checkbox and findings in `docs/PLAN.md`.
+
+## Deliverables
+
+Keep every assignment deliverable. If something is blocked, mark it pending in the plan and name the blocker. Do not delete or silently skip the requirement.
+
+## Credentials
+
+Read `API_KEY` or `OPENAI_API_KEY`, and `VECTOR_STORE_ID`, from the environment. Never print, commit, or paste a key. `.env` stays untracked. `.env.sample` has empty values only.
+
+## Evidence
+
+Label each check as one of:
+
+- **mocked** — unit test with no network
+- **live API** — a real OpenAI call, such as `check_one_file.py`
+- **UI** — Playground screenshot the user captured
+- **deployment** — a hosted daily run and a public log URL
+
+Do not treat a mocked test as a live upload, or a script log as a Playground screenshot.
+
+```text
+mocked:     python -m unittest discover -s tests
+live API:   .venv/bin/python check_one_file.py
+UI:         Playground screenshot still pending
+deployment: daily job URL still pending
+```
+
+## Report
+
+End each task with what changed, which evidence was actually run, one useful manual check, and the next plan step.

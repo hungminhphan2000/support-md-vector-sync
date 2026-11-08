@@ -1,0 +1,7 @@
+# Pending first run
+# This file is overwritten by .github/workflows/daily-optibot.yml after a
+# successful scheduled or manual Actions run. Until then there are no live counts.
+ran_at=pending
+added=pending
+updated=pending
+skipped=pending
