@@ -1,6 +1,6 @@
 # Remaining take-home plan
 
-Part 1 scrape/export is in place. This document plans the remaining work. The SCIO brief is still unchosen. The one-file check script is `check_one_file.py`. Live API uploads have already succeeded into store `vs_6af032a615b88191a363b0ae464d4677` (one-file check, then batch upload of 101 articles); see the findings below.
+Part 1 scrape/export is in place. This document plans the remaining work. The SCIO brief is Brief A; see `docs/SCIO_SLICE_PLAN.md`. The one-file check script is `check_one_file.py`. Live API uploads have already succeeded into store `vs_6af032a615b88191a363b0ae464d4677` (one-file check, then batch upload of 101 articles); see the findings below.
 
 ## What already satisfies the assignment
 
@@ -236,22 +236,24 @@ Depends on the live one-file store above. The Playground response now demonstrat
 ### 4. Daily job — about 1 hour
 
 - [x] GitHub Actions workflow `.github/workflows/daily-optibot.yml` prepared: daily cron (`0 6 * * *` UTC) plus `workflow_dispatch`. Builds `optibot-job`, runs it with repo secrets `API_KEY` and `VECTOR_STORE_ID`, writes only `ran_at` plus count lines to `docs/last-run.txt`, and commits that file after a successful run. **Local validation:** `actionlint .github/workflows/daily-optibot.yml` exited 0.
-- [ ] Publish the repo, set the two GitHub secrets, and trigger the first Actions run. **Expect** a successful run and a committed `docs/last-run.txt` with `added`, `updated`, and `skipped`. Scheduled runs remain unverified until the workflow is on the default branch.
+- [ ] Complete the first hosted daily run. The public repo and repository secrets are ready; `docs/last-run.txt` still contains a placeholder. Verify a successful run on an eligible host and publish a last-run record with `added`, `updated`, and `skipped`.
 - [x] README links relatively to `docs/last-run.txt` with a clear pending-first-run placeholder until Actions commits live counts. After the first successful run, that file shows `added`, `updated`, and `skipped`.
 
 ### 5. README and repo — about 30 minutes
 
 - [x] README is one page: setup, Docker run, chunking (`800` / `400`), unavailable indexed chunk count, screenshot, and relative link to `docs/last-run.txt`.
 - [x] `.env.sample` lists empty `API_KEY` and `VECTOR_STORE_ID` only (no `OPENAI_API_KEY`, no store id value).
-- [ ] GitHub repo name does not contain “optisigns”.
+- [x] Public GitHub repo: `https://github.com/phanmhung/support-md-vector-sync`. The name omits “optisigns”; remote `HEAD` matches the local commit `e00c10e`.
 
-## Part 2, after Part 1 is submittable
+## Part 2
 
-About 10 hours. Start only when the Part 1 checkboxes needed for a submission are done. The assignment prefers a partial submission that says what was cut.
+About 10 hours. Product exploration can proceed while Part 1 hosted-run evidence is pending. The assignment prefers a partial submission that says what was cut.
 
-- [ ] Use the trial as a customer on `app.optisigns.com` and read the Help Center articles for the chosen slice.
-- [ ] Choose Brief A or Brief B and write that choice, with the reason, at the top of the planning document.
-- [ ] State team size, platforms, and depth. Say what would be built, in what order, how long it would take, and why.
+Observed in the SCIO trial on 8 November 2026: upload reported that files were uploaded and being processed; the asset menu exposed actions including Duplicate Asset, Edit Tags, Organize, Playlists, and Move to Trash. The `Lobby demo` playlist contains two image assets, and the user found a 4-second minimum item duration. A one-time `Lobby demo schedule` event selected that playlist for 8:43–9:13 PM. When another event overlapped it, SCIO warned that the last updated schedule item would take priority and offered `Adjust Times` or `Save Anyway`. No timezone label is visible in the captured event dialog. The screen editor shows `Screen 1` assigned to `Lobby demo schedule`, and the user reports that the player displayed the content. Video duration remains unobserved.
+
+- [x] Explore the core Brief A path in the SCIO trial: uploaded files → playlist with item durations → one-time schedule and overlap warning → schedule assigned to a screen with playback reported. Reviewed official Help Center articles for these features. Video and document asset behavior remain follow-up topics.
+- [x] Choose Brief A or Brief B and write that choice, with the reason, at the top of the planning document. **Result:** Brief A in `docs/SCIO_SLICE_PLAN.md` because the trial already covered upload → playlist → schedule overlap → screen playback; Brief B was not exercised.
+- [x] Finalize the Brief A plan. **Result:** `docs/SCIO_SLICE_PLAN.md` adds a from-scratch foundations section. Auth, storage/processing, expiring one-time pairing codes, player refresh/offline, deploy, and QA are mapped onto the three roles and four phases. **5 weeks / 15 person-weeks was not realistic** without assuming those layers already existed; v1 is **8 weeks / 24 person-weeks** (3 + 1 + 1.5 + 2.5).
 
 ## Cut line
 
