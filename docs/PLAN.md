@@ -1,6 +1,6 @@
-# Remaining take-home plan
+# Take-home plan and evidence
 
-Part 1 scrape/export is in place. This document plans the remaining work. The SCIO brief is Brief A; see `docs/SCIO_SLICE_PLAN.md`. The one-file check script is `check_one_file.py`. Live API uploads have already succeeded into store `vs_6af032a615b88191a363b0ae464d4677` (one-file check, then batch upload of 101 articles); see the findings below.
+This document records the Part 1 implementation, live checks, and remaining blockers. The SCIO brief is Brief A; see `docs/SCIO_SLICE_PLAN.md`. Live API uploads have succeeded into store `vs_6af032a615b88191a363b0ae464d4677` (one-file check, then batch upload of 101 articles); see the findings below.
 
 ## What already satisfies the assignment
 
@@ -15,7 +15,7 @@ Current code:
 
 The Help Center has about 396 articles. Fetching the rest is optional unless the one-file check shows that the YouTube article alone cannot answer the sample question.
 
-## What is still required
+## Assignment requirements and status
 
 Part 1, in assignment order:
 
@@ -44,7 +44,7 @@ Part 1, in assignment order:
 6. A daily job on a public host (DigitalOcean, Railway, Render, Fly.io, AWS, or GCP). Each run re-scrapes, detects new and updated articles, uploads only that delta, and logs added, updated, and skipped counts. The README links to the job logs or a last-run artefact.
 7. A GitHub repo whose name does not contain “optisigns”, clear commits, no hardcoded keys, and `.env.sample`. README is at most one page: setup, local run, log link, screenshot.
 
-Pass bar is 70/100. Remaining points: vector upload 20, daily job and logs 15, clarity and README 10. Tests are +5, not required.
+Pass bar is 70/100. The hosted daily run and indexed chunk count remain unverified; the completed local Docker run and available count fields are documented without claiming those missing points.
 
 Part 2 is a separate planning document, about 10 hours, no code. Pick Brief A (assets, playlists, schedules, screens) or Brief B (team, roles, permissions, assets, screens), say why, and plan that slice only after using app.optisigns.com. That document is not this file.
 
@@ -167,7 +167,7 @@ Completed UI check. The assignment’s “create the assistant” wording maps t
 
 ## Work checklist
 
-Roughly 5 hours remain for Part 1 after the scrape work. Stop when a checkbox’s expected result fails, and record the actual API payload in this file before changing approach.
+This checklist records completed checks and the two open items. Record actual output before changing any pending item to complete.
 
 ### 0. One-file feasibility — about 45 minutes
 
@@ -236,14 +236,14 @@ Depends on the live one-file store above. The Playground response now demonstrat
 ### 4. Daily job — about 1 hour
 
 - [x] GitHub Actions workflow `.github/workflows/daily-optibot.yml` prepared: daily cron (`0 6 * * *` UTC) plus `workflow_dispatch`. Builds `optibot-job`, runs it with repo secrets `API_KEY` and `VECTOR_STORE_ID`, writes only `ran_at` plus count lines to `docs/last-run.txt`, and commits that file after a successful run. **Local validation:** `actionlint .github/workflows/daily-optibot.yml` exited 0.
-- [ ] Complete the first hosted daily run. The public repo and repository secrets are ready. `docs/last-run.txt` currently contains the verified local Docker counts with `source=local_docker`; verify a successful hosted run before treating it as scheduled evidence.
+- [ ] Complete the first hosted daily run. The public repo and repository secrets are ready, but GitHub did not start the job because the account is locked by a billing restriction. A GitHub Support ticket is open as of 2026-11-09. `docs/last-run.txt` contains verified local Docker counts with `source=local_docker`; verify a successful hosted run before treating it as scheduled evidence.
 - [x] README links relatively to `docs/last-run.txt`, which shows the verified local Docker counts and clearly labels their source. After the first successful Actions run, the workflow replaces it with `source=github_actions`, a timestamp, and fresh counts.
 
 ### 5. README and repo — about 30 minutes
 
 - [x] README is one page: setup, Docker run, chunking (`800` / `400`), unavailable indexed chunk count, screenshot, and relative link to `docs/last-run.txt`.
 - [x] `.env.sample` lists empty `API_KEY` and `VECTOR_STORE_ID` only (no `OPENAI_API_KEY`, no store id value).
-- [x] Public GitHub repo: `https://github.com/phanmhung/support-md-vector-sync`. The name omits “optisigns”; remote `HEAD` matches the local commit `e00c10e`.
+- [x] Public GitHub repo: `https://github.com/phanmhung/support-md-vector-sync`. The name omits “optisigns”; the live replacement check and its evidence have been pushed.
 
 ## Part 2
 

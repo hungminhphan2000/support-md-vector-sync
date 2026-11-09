@@ -1,4 +1,4 @@
-# Verified local Docker run on 2026-11-08. Hosted daily run is pending.
+# Verified local Docker run on 2026-11-08. First hosted run is blocked by a GitHub account billing restriction; a support ticket is open.
 # The Actions workflow replaces this file after its first successful run.
 source=local_docker
 run_date=2026-11-08

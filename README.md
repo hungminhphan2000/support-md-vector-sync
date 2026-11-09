@@ -33,7 +33,7 @@ Live API responses expose `usage_bytes` and `file_counts.*`. They do **not** exp
 
 ## Run summary
 
-[Latest verified counts](docs/last-run.txt) currently come from the local Docker run. The hosted daily run is pending; a successful Actions run will replace that file with a new timestamp and `source=github_actions`.
+[Latest verified counts](docs/last-run.txt) currently come from the local Docker run. The daily GitHub Actions workflow is configured, but its first hosted run is blocked by an account billing restriction; a support ticket is open. A successful hosted run will replace that file with a new timestamp and `source=github_actions`.
 
 ## Screenshot
 
