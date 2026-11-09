@@ -40,3 +40,7 @@ The vector-store API responses we received exposed `usage_bytes` and `file_count
 Playground File search answer to “How do I add a YouTube video?”:
 
 ![YouTube File search answer](docs/screenshots/youtube-file-search.png)
+
+## Part 2 planning
+
+[SCIO Brief A slice plan](docs/SCIO_SLICE_PLAN.md) covers the chosen scope, build order, estimates, and live product observations.
