@@ -167,7 +167,7 @@ Completed UI check. The assignment’s “create the assistant” wording maps t
 
 ## Work checklist
 
-This checklist records completed checks and the remaining open item. Local Docker (`optibot-job`), isolated delta replacement (`check_live_replace.py`), and the first hosted GitHub Actions run are verified. The indexed chunk count remains unavailable (`indexed_chunk_count_field=absent`).
+This checklist records completed checks and remaining open items. Local Docker (`optibot-job`), isolated delta replacement (`check_live_replace.py`), and the first hosted Actions run (`workflow_dispatch` 42551573546 → `docs/last-run.txt`) are verified. Still open: indexed chunk count (`indexed_chunk_count_field=absent`), and the first cron `schedule` event (not observed as of 2026-11-09T07:12Z).
 
 ### 0. One-file feasibility — about 45 minutes
 
@@ -236,8 +236,16 @@ Depends on the live one-file store above. The Playground response now demonstrat
 ### 4. Daily job — about 1 hour
 
 - [x] GitHub Actions workflow `.github/workflows/daily-optibot.yml` prepared: daily cron (`0 6 * * *` UTC) plus `workflow_dispatch`. Builds `optibot-job`, runs it with repo secrets `API_KEY` and `VECTOR_STORE_ID`, writes only `ran_at` plus count lines to `docs/last-run.txt`, and commits that file after a successful run. **Local validation:** `actionlint .github/workflows/daily-optibot.yml` exited 0.
-- [x] Complete the first hosted run of the daily workflow. After repository transfer, [workflow run 42551573546](https://github.com/hungminhphan2000/support-md-vector-sync/actions/runs/42551573546) was manually dispatched and completed successfully on 2026-11-09; the daily cron remains configured, but its first scheduled occurrence has not yet been observed. Docker built and ran; `docs/last-run.txt` was committed by Actions (`dc79c04`) with `source=github_actions`, `ran_at=2026-11-09T02:33:51Z`, `refresh_articles=101`, `added=0`, `updated=0`, `skipped=101`, `failed=0`, `removed_old=0`, and `completed_file_count=101`. The earlier billing lock applied to the previous repository owner.
-- [x] README links relatively to `docs/last-run.txt`, which now shows the verified hosted counts and timestamp, and links to the successful Actions run.
+- [x] Complete the first hosted run of the daily workflow. **deployment evidence (re-checked 2026-11-09T07:12Z):** repo workflow runs for `.github/workflows/daily-optibot.yml` are only:
+
+  | Run | Event | Result |
+  |---|---|---|
+  | [42551573546](https://github.com/hungminhphan2000/support-md-vector-sync/actions/runs/42551573546) | `workflow_dispatch` | **success** (45s) |
+  | [42484507596](https://github.com/hungminhphan2000/support-md-vector-sync/actions/runs/42484507596) | `workflow_dispatch` | failure (billing lock on prior owner) |
+
+  **No `event=schedule` run exists yet** (cron `0 6 * * *` UTC is configured and the workflow is `active`; the 06:00 UTC slot on 2026-11-09 had passed at check time without a schedule run appearing). First hosted success remains the manual dispatch above: job steps checkout → build → `docker run` → write `docs/last-run.txt` → commit all succeeded. Job log includes `fetch_article_by_id article_id=360051014713`, `refresh_articles=101`, `added=0`, `updated=0`, `skipped=101`, `failed=0`, `completed_file_count=101`. Actions committed `dc79c04` (`chore: update docs/last-run.txt`); committed file matches HEAD `docs/last-run.txt` (`source=github_actions`, `ran_at=2026-11-09T02:33:51Z`, same counts).
+- [x] README links relatively to `docs/last-run.txt`, which shows the verified hosted counts and timestamp, and links to run `42551573546`.
+- [ ] Observe the first cron `schedule` run (`0 6 * * *` UTC). **Pending.** Re-check Actions for `event=schedule` after the next 06:00 UTC window (GitHub can delay first schedules). Expect another successful job and an updated `docs/last-run.txt` commit if counts or `ran_at` change.
 
 ### 5. README and repo — about 30 minutes
 
@@ -266,7 +274,7 @@ If time runs out, finish from the top of the checklist and say which boxes were 
 1. One-file API upload, the count fields the API actually returns, and the YouTube screenshot.
 2. `main.py` delta counts, including refresh of ids already in the store.
 3. `docker run --rm -e API_KEY -e VECTOR_STORE_ID optibot-job` exits 0.
-4. Daily schedule and a log link. The first hosted run succeeded after the repository transfer.
+4. Daily schedule and a log link. First hosted success is `workflow_dispatch` 42551573546 + committed `docs/last-run.txt`; first cron `schedule` run still pending observation.
 5. One-page README.
 6. Part 2.
 
