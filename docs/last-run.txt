@@ -1,8 +1,5 @@
-# Verified local Docker run on 2026-11-08. First hosted run is blocked by a GitHub account billing restriction; a support ticket is open.
-# The Actions workflow replaces this file after its first successful run.
-source=local_docker
-run_date=2026-11-08
-fetched_by_id=360051014713
+source=github_actions
+ran_at=2026-11-09T02:33:51Z
 refresh_articles=101
 added=0
 updated=0
