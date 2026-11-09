@@ -29,6 +29,14 @@ Facts from SCIO only. Not Help Center copy. Not v1 commitments.
 7. Screen editor: `Screen 1` assigned to `Lobby demo schedule`. The player displayed the content.
 8. Video duration was not observed. Document assets were not used. Folders were not used. Pairing a new screen was not used (`Screen 1` was already present).
 
+### Follow-up browser review (9 Nov 2026; no changes saved)
+
+- **Assets:** The Upload Files picker accepts PDF, Office document, image, and video formats. On an existing image, `Asset info` offers `Replace Asset`; `Organize` offers `Move To` and `Rename`. This confirms UI affordances, not processing or playback of newly uploaded file types.
+- **Folders:** New Folder asks for a name. Advanced settings expose team access and a permission level (shown as `Edit`). No folder was created.
+- **Playlists:** Default Playlist Settings showed a 20-second item duration, separate image/video/document scale controls, transition, and target-tag options. `Lobby demo` showed two images at 4 and 20 seconds (24 seconds total). Playlist Options also exposes shuffle, transition speed, maximum duration, tags, sub-playlist controls, and background music. Their runtime effects were not tested.
+- **Schedules:** The calendar displayed two overlapping `Lobby demo` events (8:43–9:13 and 8:44–9:14). Add Event can select an asset or playlist. Repeat offers daily, weekly, several monthly choices, weekdays, weekends, and Custom; Custom details were not inspected. Global Default Content says it fills gaps between schedule events. No new event was saved.
+- **Screens:** Add Screen asks for a pair code and offers a lowercase-code checkbox; Pair is disabled without a code. `Screen 1` appeared offline during this review and remained assigned to `Lobby demo schedule`. The editor offers Asset, Playlist, Schedule, and Stop Playing as content types, plus an Operational Schedule and advanced options such as Preload Assets in Playlist and Show Offline Indicator. No new screen was paired and no setting was saved.
+
 ## Help Center (not trial)
 
 Cited where the trial did not show the behavior. These are product facts we design against, not SCIO screenshots.
