@@ -167,7 +167,7 @@ Completed UI check. The assignment’s “create the assistant” wording maps t
 
 ## Work checklist
 
-This checklist records completed checks and the two open items. Record actual output before changing any pending item to complete.
+This checklist records completed checks and the remaining open items. Local Docker (`optibot-job`) and the isolated delta replacement (`check_live_replace.py`) are verified. Still open: indexed chunk count (`indexed_chunk_count_field=absent`), and the first **hosted** daily Actions run (workflow configured; GitHub account billing lock blocked the job before a runner started; support ticket open; `docs/last-run.txt` is `source=local_docker` until a hosted run succeeds).
 
 ### 0. One-file feasibility — about 45 minutes
 
@@ -262,7 +262,7 @@ If time runs out, finish from the top of the checklist and say which boxes were 
 1. One-file API upload, the count fields the API actually returns, and the YouTube screenshot.
 2. `main.py` delta counts, including refresh of ids already in the store.
 3. `docker run --rm -e API_KEY -e VECTOR_STORE_ID optibot-job` exits 0.
-4. Daily schedule and a log link.
+4. Daily schedule and a log link. Workflow is ready; first hosted run still blocked by GitHub billing.
 5. One-page README.
 6. Part 2.
 
