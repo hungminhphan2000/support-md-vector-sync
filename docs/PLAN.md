@@ -44,7 +44,7 @@ Part 1, in assignment order:
 6. A daily job on a public host (DigitalOcean, Railway, Render, Fly.io, AWS, or GCP). Each run re-scrapes, detects new and updated articles, uploads only that delta, and logs added, updated, and skipped counts. The README links to the job logs or a last-run artefact.
 7. A GitHub repo whose name does not contain “optisigns”, clear commits, no hardcoded keys, and `.env.sample`. README is at most one page: setup, local run, log link, screenshot.
 
-Pass bar is 70/100. The hosted daily run and indexed chunk count remain unverified; the completed local Docker run and available count fields are documented without claiming those missing points.
+Pass bar is 70/100. The local Docker run and first hosted daily job are verified. The indexed chunk count remains unavailable from the API response; available count fields are documented without claiming a chunk total.
 
 Part 2 is a separate planning document, about 10 hours, no code. Pick Brief A (assets, playlists, schedules, screens) or Brief B (team, roles, permissions, assets, screens), say why, and plan that slice only after using app.optisigns.com. That document is not this file.
 
@@ -167,7 +167,7 @@ Completed UI check. The assignment’s “create the assistant” wording maps t
 
 ## Work checklist
 
-This checklist records completed checks and the remaining open items. Local Docker (`optibot-job`) and the isolated delta replacement (`check_live_replace.py`) are verified. Still open: indexed chunk count (`indexed_chunk_count_field=absent`), and the first **hosted** daily Actions run (workflow configured; GitHub account billing lock blocked the job before a runner started; support ticket open; `docs/last-run.txt` is `source=local_docker` until a hosted run succeeds).
+This checklist records completed checks and the remaining open item. Local Docker (`optibot-job`), isolated delta replacement (`check_live_replace.py`), and the first hosted GitHub Actions run are verified. The indexed chunk count remains unavailable (`indexed_chunk_count_field=absent`).
 
 ### 0. One-file feasibility — about 45 minutes
 
@@ -236,18 +236,18 @@ Depends on the live one-file store above. The Playground response now demonstrat
 ### 4. Daily job — about 1 hour
 
 - [x] GitHub Actions workflow `.github/workflows/daily-optibot.yml` prepared: daily cron (`0 6 * * *` UTC) plus `workflow_dispatch`. Builds `optibot-job`, runs it with repo secrets `API_KEY` and `VECTOR_STORE_ID`, writes only `ran_at` plus count lines to `docs/last-run.txt`, and commits that file after a successful run. **Local validation:** `actionlint .github/workflows/daily-optibot.yml` exited 0.
-- [ ] Complete the first hosted daily run. The public repo and repository secrets are ready, but GitHub did not start the job because the account is locked by a billing restriction. A GitHub Support ticket is open as of 2026-11-09. `docs/last-run.txt` contains verified local Docker counts with `source=local_docker`; verify a successful hosted run before treating it as scheduled evidence.
-- [x] README links relatively to `docs/last-run.txt`, which shows the verified local Docker counts and clearly labels their source. After the first successful Actions run, the workflow replaces it with `source=github_actions`, a timestamp, and fresh counts.
+- [x] Complete the first hosted run of the daily workflow. After repository transfer, [workflow run 42551573546](https://github.com/hungminhphan2000/support-md-vector-sync/actions/runs/42551573546) was manually dispatched and completed successfully on 2026-11-09; the daily cron remains configured, but its first scheduled occurrence has not yet been observed. Docker built and ran; `docs/last-run.txt` was committed by Actions (`dc79c04`) with `source=github_actions`, `ran_at=2026-11-09T02:33:51Z`, `refresh_articles=101`, `added=0`, `updated=0`, `skipped=101`, `failed=0`, `removed_old=0`, and `completed_file_count=101`. The earlier billing lock applied to the previous repository owner.
+- [x] README links relatively to `docs/last-run.txt`, which now shows the verified hosted counts and timestamp, and links to the successful Actions run.
 
 ### 5. README and repo — about 30 minutes
 
 - [x] README is one page: setup, Docker run, chunking (`800` / `400`), unavailable indexed chunk count, screenshot, and relative link to `docs/last-run.txt`.
 - [x] `.env.sample` lists empty `API_KEY` and `VECTOR_STORE_ID` only (no `OPENAI_API_KEY`, no store id value).
-- [x] Public GitHub repo: `https://github.com/phanmhung/support-md-vector-sync`. The name omits “optisigns”; the live replacement check and its evidence have been pushed.
+- [x] Public GitHub repo: `https://github.com/hungminhphan2000/support-md-vector-sync`. The name omits “optisigns”; the live replacement check and hosted-run evidence have been pushed.
 
 ## Part 2
 
-About 10 hours. Product exploration can proceed while Part 1 hosted-run evidence is pending. The assignment prefers a partial submission that says what was cut.
+About 10 hours. Product exploration and the Brief A plan are complete; the assignment prefers a partial submission that says what was cut.
 
 Observed in the SCIO trial on 8 November 2026: upload reported that files were uploaded and being processed; the asset menu exposed actions including Duplicate Asset, Edit Tags, Organize, Playlists, and Move to Trash. The `Lobby demo` playlist contains two image assets, and the user found a 4-second minimum item duration. A one-time `Lobby demo schedule` event selected that playlist for 8:43–9:13 PM. When another event overlapped it, SCIO warned that the last updated schedule item would take priority and offered `Adjust Times` or `Save Anyway`. No timezone label is visible in the captured event dialog. The screen editor shows `Screen 1` assigned to `Lobby demo schedule`, and the user reports that the player displayed the content. Video duration remains unobserved.
 
@@ -262,7 +262,7 @@ If time runs out, finish from the top of the checklist and say which boxes were 
 1. One-file API upload, the count fields the API actually returns, and the YouTube screenshot.
 2. `main.py` delta counts, including refresh of ids already in the store.
 3. `docker run --rm -e API_KEY -e VECTOR_STORE_ID optibot-job` exits 0.
-4. Daily schedule and a log link. Workflow is ready; first hosted run still blocked by GitHub billing.
+4. Daily schedule and a log link. The first hosted run succeeded after the repository transfer.
 5. One-page README.
 6. Part 2.
 
