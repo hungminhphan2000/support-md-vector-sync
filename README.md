@@ -29,7 +29,7 @@ Uploads use the vector-store default static chunking strategy:
 - `max_chunk_size_tokens=800`
 - `chunk_overlap_tokens=400`
 
-Live API responses expose `usage_bytes` and `file_counts.*`. They do **not** expose an indexed chunk count (`indexed_chunk_count_field=absent`), so embedded chunk totals cannot be logged from the published API.
+The vector-store API responses we received exposed `usage_bytes` and `file_counts.*`, but no indexed chunk count (`indexed_chunk_count_field=absent`). The embedded chunk total is therefore unverified.
 
 ## Run summary
 
