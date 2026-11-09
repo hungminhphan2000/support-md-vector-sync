@@ -1,213 +1,73 @@
-# Part 2 — SCIO slice plan (Brief A)
+# SCIO slice plan — Brief A
 
-**Choice:** Brief A — uploaded files, playlists, schedules, and screens.
+I chose **Brief A: uploaded assets, playlists, schedules, and screens**. It is the part of SCIO I could follow from beginning to end in the trial: put content in the library, arrange it, decide when it plays, and connect it to a screen. Brief B would have required a different investigation of teams and permissions, which I did not do deeply enough to base a plan on.
 
-**Why not Brief B:** The 8 November 2026 SCIO trial walked the Brief A path (upload → playlist with durations → one-time schedule with overlap warning → screen assignment → reported playback). Team, roles, and permissions were not exercised.
+My proposed first release takes **8 weeks with three people (24 person-weeks)**. It covers one account, a web CMS, an API with file processing, and one browser-based player. The path I want to prove is simple: **upload two images → make a playlist → schedule it → pair a screen → see the images play**. This is a new build, so the estimate includes login, storage, deployment, and player work. If those already existed, the estimate would be shorter.
 
-This document is planning only. No code.
+## What I learned by using SCIO
 
-## Team, platforms, depth
+I used the trial on 8–9 November 2026. These observations shaped the plan:
 
-| Item | Decision |
-|---|---|
-| Team | 3 people: CMS web, API/storage, player. The CMS owner also runs the vertical-path QA. |
-| Platforms | Web CMS and one player. No mobile app, Designer, Split Screen, or nested playlists. |
-| v1 calendar | **8 weeks** |
-| v1 effort | **24 person-weeks** (3 people × 8 weeks, all on this slice) |
-| Depth | One account. Image files in a playlist, one-time schedule with overlap, pairing-code registration, assign schedule to that screen, playback. |
+- Uploading a file reported that it was being processed. That makes upload a small pipeline, not just a form that saves a URL.
+- I put two images in a `Lobby demo` playlist. Each item had its own duration, and the editor enforced a **4-second minimum**. The asset menu also offered duplicate, tags, folders, and trash, but none of those were needed to get content playing.
+- I created a one-time event in `Lobby demo schedule` for 8:43–9:13 PM. A second overlapping event produced a warning: the last updated item would win during the overlap. The UI let me adjust the times or save anyway. I did not see a timezone label in that event form.
+- `Screen 1` was assigned to that schedule. Its later offline status made it a poor device for further testing. I then paired a fresh **Web Player** through Add Screen, assigned the existing playlist directly, and watched both images appear in turn. I removed that temporary screen afterward. This verified pairing and direct playlist playback; it did **not** verify scheduled playback on the new screen.
+- I also uploaded a six-second video and a one-page PDF to learn how SCIO treats them. Both previewed successfully. The video took its native six-second duration in a temporary playlist; the PDF took the account's 20-second default. I moved those temporary files and the playlist to Trash. Their playback on a player remains untested.
 
-## Observed (8 Nov 2026 trial)
+The [OptiSigns schedule guide](https://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns) says events run in each screen's local timezone. I use that product behavior in the design below. I did not observe code expiry, offline playback, or failed file processing in the trial; those are design choices to test during the build.
 
-Facts from SCIO only. Not Help Center copy. Not v1 commitments.
+## The first release
 
-1. Upload reported that files were uploaded and being processed.
-2. The asset menu listed Duplicate Asset, Edit Tags, Organize, Playlists, and Move to Trash. Those actions were not used in the walkthrough.
-3. Playlist `Lobby demo` held two **image** assets. Item duration had a **4-second minimum**.
-4. One-time schedule `Lobby demo schedule` selected that playlist for **8:43–9:13 PM**.
-5. An overlapping event warned that the **last updated** schedule item would take priority, with **Adjust Times** or **Save Anyway**.
-6. The captured event dialog showed **no timezone label**.
-7. Screen editor: `Screen 1` assigned to `Lobby demo schedule`. The player displayed the content.
-8. Video duration was not observed. Document assets were not used. Folders were not used. Pairing a new screen was not used (`Screen 1` was already present).
+I would ship the smallest complete route from an uploaded file to a paired screen. The CMS accepts **images only** at first. It shows `processing`, `ready`, or `failed` for each upload and gives a clear `unsupported_file` message for video or documents. Unsupported files do not enter the library. An image can join a playlist only after it is ready.
 
-### Follow-up browser review (9 Nov 2026; no changes saved)
+A playlist is an ordered list of image items. Each item has a duration of at least four seconds, and the list loops. A schedule contains one-time events that point to a playlist. Users can save overlaps after seeing the same kind of warning I saw in SCIO; the event with the latest update wins for the overlapping minutes. A screen is paired with a one-time code and can be assigned a schedule. The player refreshes its assignment while online and keeps the last complete set of images locally so a brief network loss does not turn the screen black.
 
-- **Assets:** The Upload Files picker accepts PDF, Office document, image, and video formats. On an existing image, `Asset info` offers `Replace Asset`; `Organize` offers `Move To` and `Rename`. This confirms UI affordances, not processing or playback of newly uploaded file types.
-- **Folders:** New Folder asks for a name. Advanced settings expose team access and a permission level (shown as `Edit`). No folder was created.
-- **Playlists:** Default Playlist Settings showed a 20-second item duration, separate image/video/document scale controls, transition, and target-tag options. `Lobby demo` showed two images at 4 and 20 seconds (24 seconds total). Playlist Options also exposes shuffle, transition speed, maximum duration, tags, sub-playlist controls, and background music. Their runtime effects were not tested.
-- **Schedules:** The calendar displayed two overlapping `Lobby demo` events (8:43–9:13 and 8:44–9:14). Add Event can select an asset or playlist. Repeat offers daily, weekly, several monthly choices, weekdays, weekends, and Custom; Custom details were not inspected. Global Default Content says it fills gaps between schedule events. No new event was saved.
-- **Screens:** Add Screen asks for a pair code and offers a lowercase-code checkbox; Pair is disabled without a code. `Screen 1` appeared offline during this review and remained assigned to `Lobby demo schedule`. The editor offers Asset, Playlist, Schedule, and Stop Playing as content types, plus an Operational Schedule and advanced options such as Preload Assets in Playlist and Show Offline Indicator. No new screen was paired and no setting was saved.
+I would leave video, documents, folders, duplicate/replace, tags, and trash out of this release. SCIO has all of them, and they belong in Brief A, but each adds another path to process or maintain. Shipping those controls before the basic upload-to-screen route works would spread three people too thin. I would also leave recurrence and direct asset or playlist assignment for later; the release uses schedule assignment so that the full route is exercised.
 
-### Focused media test (9 Nov 2026; temporary assets cleaned up)
+### Decisions I would settle before coding
 
-- Created a one-page PDF and a six-second `.mov` containing only test text/color. Both uploaded through **Upload Files** and appeared as `Doc` and `Video` in Files/Assets. The PDF preview displayed its rendered page; the video preview played, and the browser video element reported six seconds. This verifies the successful upload/preview path for these two small samples, not every format or a failed-processing case.
-- Added both files to a separate temporary playlist. SCIO assigned the video **6 seconds**, matching its native length, and the one-page PDF **20 seconds**, matching the account's default item duration. The playlist total was **26 seconds**. Video duration was editable; its item options included mute, transition, item schedule, resume, and repeat controls. A multi-page document and the four-second minimum for document items were not tested.
-- Moved the temporary playlist and both test assets to Trash. Active views returned to **2 playlists** and **11 assets**. Existing `Lobby demo` was not edited.
-- Opened the installed macOS player, but its window rendered black and `Screen 1` still showed offline in CMS. This did not establish pairing, device playback, or offline-cache behavior; the earlier playback report remains the evidence for that path.
+**File processing.** The API issues a signed upload, checks the real file type, and stores the original in object storage. A worker creates a display-sized image and moves the asset from `processing` to `ready` or `failed`. The player only receives ready files. The CMS shows the failure so the user can retry rather than leaving a blank playlist item.
 
-### Web Player pairing and playback test (9 Nov 2026; test screen removed)
+**Time and overlaps.** An event stores the wall-clock start and end entered in the CMS, without pretending it belongs to the administrator's timezone. When a screen plays it, the player interprets that window in the screen's reported IANA timezone. This follows the Help Center's per-screen behavior. The API stores `updated_at` so overlap priority is deterministic. I would test daylight-saving transitions explicitly, even though the first demo uses one screen.
 
-- Opened the official [OptiSigns Web Player](https://www.optisigns.com/post/how-to-use-optisigns-with-browser) in a separate browser session. It displayed a six-character pair code. Submitted that code through **Add Screen** in the signed-in CMS; the player changed to **Paired** and CMS created a second screen.
-- Named the temporary screen `SCIO playback test - delete me`, selected content type **Playlist**, assigned the existing `Lobby demo` playlist, and saved. CMS marked the test screen **Online**. The Web Player visibly displayed each of the two existing image assets in turn. This verifies the live pairing → assignment → image-playback path for a direct playlist assignment. It does not verify scheduled playback, video/PDF playback on a player, pairing-code expiry/reuse, or offline cache.
-- Deleted only the temporary screen after the test. CMS returned to **1 screen** (`Screen 1`, offline). The installed macOS player still has a separate black-render/offline issue; this Web Player result does not resolve that device.
+**Pairing.** An unpaired player shows a short code. The API gives it an expiry, accepts it once, and returns a device credential after successful pairing. An expired or reused code has a specific error; the player can request a new one. I did not see the expiry behavior in SCIO, so this is a security and recovery decision for our version, not a claim about their implementation.
 
-## Help Center (not trial)
+**Playback when the network drops.** The player downloads a complete playlist before replacing its current cache. If it loses the network, it continues with that complete copy through the scheduled window; with no cached content it stays idle. On reconnect it fetches a fresh assignment. This costs time in the last phase, but it is part of making a screen usable outside a perfect demo connection.
 
-Cited where the trial did not show the behavior. These are product facts we design against, not SCIO screenshots.
+## Build order and estimate
 
-- **Pairing** ([Getting Started Guide](https://support.optisigns.com/hc/en-us/articles/18823504383891-OptiSigns-Getting-Started-Guide)): player shows a pair code; CMS **New Screen** / **Add Screen** submits it; player then shows Paired.
-- **Schedules / timezone** ([Creating and Using Schedules](https://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns)): screens play in **their local time zones**, not the computer or portal timezone. A 10–11 AM event plays 10–11 AM EST on an EST device and 10–11 AM PST on a PST device. DST is handled automatically.
-- **Playlists / push** ([How to Create & Use Playlists](https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists), [Push Contents to Your Screens](https://support.optisigns.com/hc/en-us/articles/18988049363859-Push-Contents-to-your-Screens)): a screen assignment type may be asset, playlist, or schedule; playlist item duration is editable. Direct asset/playlist assignment is later.
+The three people are a **CMS engineer**, an **API/storage engineer**, and a **player engineer**. They work in parallel, but each phase has a path that can be demonstrated before the next one depends on it. The CMS engineer owns the end-to-end QA checklist.
 
-## Assumptions (still unverified)
+1. **Weeks 1–3: foundations, images, and pairing (9 person-weeks).** Put login and account boundaries in place, deploy the empty CMS/API/player shells, then build image upload and processing. In parallel, the player gets a code and can pair. I would not start the playlist editor until it has ready images to use.
+2. **Week 4: playlists (3 person-weeks).** Create and reorder image items, enforce the four-second floor, and loop them on the player. This is intentionally a short phase because upload and the player shell already exist.
+3. **The next 1.5 weeks: schedules (4.5 person-weeks).** Add one-time events, the overlap warning, and last-updated priority. Test how those events resolve in the screen's local timezone, including daylight-saving boundaries. Events now have a real playlist to point at.
+4. **The final 2.5 weeks: assignment and playback (7.5 person-weeks).** Wire the schedule to a paired screen, refresh and cache content, then test playback through a network interruption. Leave room to run the whole route in the shared environment and fix integration issues.
 
-- **Processing:** “being processed” becomes `ready` or `failed`. A failed upload was not watched to completion.
-- **Event dialog:** v1 can omit a timezone label in the event form (matching the trial) while still evaluating playback in each screen’s local zone (Help Center).
-- Recurring rules were visible in the event editor but not saved. Video native duration and one-page PDF timing were verified only in the focused media test above.
-- **Pairing TTL:** Help Center shows a code on the player; it does not state expiry. v1 codes are single-use and expire; unused expiry was not observed.
-- **Refresh / offline:** the trial reported playback while online. Polling the manifest and playing a cached copy if the network drops are v1 design, not trial evidence.
+That totals **8 weeks / 24 person-weeks** with three people working in parallel.
 
-## v1 versus later
+The CMS engineer owns the editor and the visible error states. The API/storage engineer owns account scoping, upload, processing, pairing-code rules, and the content manifest. The player engineer owns code display, playback, timezone handling, and the cache. In weeks 4–5, a fixture playlist or event lets the player work continue while the CMS and API pieces are being connected; the final phase replaces those fixtures with real data.
 
-| Area | v1 | Later (see roadmap) |
-|---|---|---|
-| Image files | Upload, processing `processing` → `ready` \| `failed`, add to playlist | — |
-| Video files | Upload returns an **unsupported-file** error (type + “not in v1”). File is not stored as an asset. | Native duration as playlist default (observed with a six-second `.mov`) |
-| Document files | Same **unsupported-file** error. Not stored. | Timed stills (one-page PDF playlist item observed at the 20-second default); player playback and duration floor still unverified for docs |
-| Folders | Flat asset list | Organize / folder tree |
-| Duplicate Asset | Not built | Roadmap |
-| Edit Tags | Not built | Roadmap |
-| Organize | Not built | Roadmap (with folders) |
-| Playlists (asset menu) | Not built | Shortcut into the playlist editor |
-| Move to Trash | Not built | Soft-delete / trash |
-| Playlist editor | Create, ordered image items, duration ≥ 4s | Nested playlists, apps, web links |
-| Schedule | One-time wall-clock events; overlap warning; last-`updated_at` wins; playback in **each assigned screen’s local timezone** | Recurrence, temp takeover, push-to-screens |
-| Screen | Pairing-code register, device-reported timezone, name, assign **schedule** | Assign playlist or asset; group edit; unpair |
+I would not promise a five-week delivery for this from scratch. That would leave only 15 person-weeks for four surfaces, file processing, pairing, scheduling, and resilient playback. Eight weeks is still tight; it depends on keeping the first release to images and one-time events. Existing auth, storage, or player infrastructure would be the clearest reason to revise the estimate down.
 
-v1 does not ship disabled buttons for later actions. The CMS asset row has no Duplicate / Tags / Organize / Trash / Playlists menu.
+## How I would know it works
 
-Unsupported files: the API responds `unsupported_file` with the detected kind (`video`, `document`, or other) and a message that only images are accepted in v1. The CMS shows that message. Silent drop is not allowed.
+The final demo uses one account and one player:
 
-## Data model (v1 only)
+1. Start the player, pair it through the CMS, and see it change from code to paired. Try a reused or expired code and get an understandable error.
+2. Upload two images. See processing finish before either is selectable for a playlist. Try a PDF or video and see an explicit unsupported-file message.
+3. Create a playlist with different durations. Verify the four-second floor and that both images loop in order.
+4. Create a one-time event, then an overlapping event. See the warning, save anyway, and verify the latest updated event wins during the overlap.
+5. Assign the schedule to the screen. During the event window, see the playlist play in that screen's local time. Change the playlist and see the player refresh. Disconnect the network after content is cached and see playback continue through the window.
 
-Account-scoped. Opaque ids.
+I would automate the API rules for file state, duration, pairing-code reuse, and overlap priority. The CMS engineer would run the visible path at each phase exit. The player engineer would own the pairing, timezone, cache, and reconnect checks. A fixture test is useful early, but the final acceptance needs the actual CMS, API, and player together.
 
-**Asset:** `id`, `name`, `kind=image`, `processing_status`. No file-level duration.
+## What comes after
 
-**Playlist:** `id`, `name`, `items[]` as `{ asset_id, duration_seconds }` with `duration_seconds >= 4`. Only `ready` images.
+I would add the rest of Brief A in this order, using the same three-person team. These are rough estimates after the first release, not part of its eight weeks:
 
-**Schedule event:** `{ playlist_id, local_start, local_end, updated_at }`. `local_start` / `local_end` are **civil date-times without a zone** (the 8:43–9:13 PM the editor showed). `local_end > local_start`. Overlap in the CMS is overlap of those wall-clock ranges. After the warning, both events may be saved; the player uses **highest `updated_at`** on the overlap.
+1. **Video — about 2 weeks.** Add processing and player playback, then use the source video's length as the playlist default. This has the highest new playback risk, so I would tackle it before library conveniences.
+2. **Documents — about 1.5 weeks.** Render pages into timed stills and reuse the image display path. The one-page PDF I tested used the 20-second default in a playlist, but I did not test multi-page playback.
+3. **Folders — about 1 week.** Add a folder tree and Move To for assets. The flat list can remain available.
+4. **Asset actions — about 1.5 weeks.** Add trash, then duplicate/replace, tags, and the shortcut from an asset into playlists. I would define what happens to playlist items when an asset is trashed before shipping that action.
 
-**Screen:** `id`, `name`, `pairing_code`, `pairing_code_expires_at`, `paired_at`, `time_zone` (IANA id from the device at pair/heartbeat), `assignment` `{ type: "schedule", id }`. A code is issued to the unpaired player, **expires**, and is **consumed once**. After expiry without a pair, the player shows a new code. Used or expired codes return an explicit error in New Screen.
-
-Playback instant for a screen: interpret `local_start`/`local_end` in **that screen’s `time_zone`**, including DST. The same schedule on two screens at 10 AM is 10 AM local on each, not one shared UTC window. v1 still ships one screen; the data model is already per-screen so a second device would not require a schedule rewrite.
-
-Player: unpaired (show code) → paired idle → assignment → winning event in **this device’s local zone** → playlist loop until local `local_end`.
-
-## Upload → playback (v1)
-
-```text
-player shows pairing code (and reports time_zone)
-  → CMS New Screen submits the code → player Paired
-upload
-  → image: processing → ready
-  → video/document/other: unsupported_file error, not stored
-  → playlist of ready images (each duration ≥ 4s)
-  → one-time schedule event (wall-clock start/end)
-  → overlap: warn last-updated wins; Adjust Times or Save Anyway
-  → assign that schedule to the paired screen
-  → player plays the winning event in the screen’s local timezone
-```
-
-Overlap is between **events on one schedule**. Pairing is required before assignment; the trial skipped it because `Screen 1` already existed.
-
-## From-scratch foundations and estimate basis
-
-v1 is a **new** CMS, API, worker, and player. The earlier **5 weeks / 15 person-weeks** only counted feature UI after those layers existed. That is not a from-scratch build. The revised total is **8 weeks / 24 person-weeks**. Foundations are not a fifth phase; they sit inside the same four phases and three roles.
-
-| Foundation | v1 meaning | Roles | Phases |
-|---|---|---|---|
-| Account / auth | One account, email+password (or magic link), session cookie/token. Every row is `account_id`-scoped. One CMS role. No Brief B. The player does **not** log in as a user; it authenticates with the pairing result. | API owns identity and tenancy. CMS owns login/shell. Player unused. | **P1** (week 1). Every later write assumes this. |
-| File storage and processing | Signed upload, MIME sniff, `unsupported_file` before persist, object store, worker that marks `processing` → `ready` \| `failed`, one display-sized image derivative. | API/storage owns bucket, queue, worker. CMS owns progress UI. Player only **downloads** `ready` URLs. | **P1** (week 2) to stand up. **P2** refuses non-ready ids. **P4** signed URLs on the manifest. |
-| Expiring one-time pairing codes | Player displays a code with TTL. CMS New Screen consumes it once. Expired, already-used, or unknown codes return a distinct error. Unpaired player rotates to a new code after expiry. | API issues/consumes/expires. CMS New Screen. Player shows code, polls, rotates. | **P1** (week 3). **P4** reuses the paired screen token for the manifest. |
-| Player refresh / offline | While online: poll/heartbeat for a new manifest (assignment or playlist change). While offline: keep the last **complete** cached playlist and play it through `local_end` in device TZ. No cache: idle, do not invent content. Reconnect: fetch manifest, replace cache. | Player owns poll, disk cache, playback. API owns cheap heartbeat + etag/manifest. CMS unused except last-seen if cheap. | Heartbeat starts **P1** (pairing poll). Cache + offline play **P4**. |
-| Deployment | One shared environment: CMS, API, worker, object store, one packaged player. Secrets at runtime. | API/storage owns infra. CMS and player ship into it. | Skeleton **P1**. Production-like path **P4**. |
-| QA | Contract tests per API. CMS owner runs the vertical path. Player owner runs pair → cache → play → drop-network. | All three. CMS owner is path QA lead. | A phase check at each exit. Full upload→playback **P4**. |
-
-Cut from v1 foundations (would blow the 8 weeks): SSO, multi-role auth, transcoding farm, CDN design, OTA player auto-update, multi-region.
-
-### Why the phase lengths (not only the order)
-
-**Phase 1 — 3 weeks / 9 pw, not 1.5.** Week 1 is auth + app shells + deploy skeleton (three empty surfaces). Week 2 is storage + worker + `unsupported_file` (the trial’s “being processed” is a pipeline, not an upload form). Week 3 is TTL/single-use pairing plus device `time_zone`. Compressing this into 1.5 weeks assumes those layers already exist.
-
-**Phase 2 — 1 week / 3 pw, unchanged.** Ordered list + duration ≥ 4s is small once `ready` images exist. CMS editor, API CRUD, player fixture playback. No new infra.
-
-**Phase 3 — 1.5 weeks / 4.5 pw, not 1.** Overlap dialog is one day; **civil times vs per-screen TZ and DST** is the rest. CMS overlap is wall-clock; the player/API must not collapse two screens onto one UTC window. Worth extra calendar even with one device in the demo.
-
-**Phase 4 — 2.5 weeks / 7.5 pw, not 1.5.** Live assignment + manifest is about a week. Refresh, disk cache, offline play, reconnect, deploy hardening, and the full QA path need the remaining 1.5. That work was previously omitted, not parallelizable into phase 1.
-
-**Why not 5 weeks:** 15 person-weeks with auth, object storage, a worker, pairing security, offline playback, deploy, and QA would cut either pairing expiry or offline cache, or ship an unauthenticated demo. Those are in scope for a defensible from-scratch v1, so the total moved.
-
-## Phases, calendar, person-weeks (v1)
-
-Three people work **in parallel every week**. CMS/API order: foundations/assets → playlists → schedules → assign. Pairing starts in phase 1; assignment stays last.
-
-| Phase | Calendar | Person-weeks | Why this order | Why this long |
-|---|---|---|---|---|
-| 1. Foundations, images, pairing | weeks 1–3 | 9 | Playlists need `ready` images. Pairing and `time_zone` do not. | Auth + storage/worker + expiring codes are three sequential infra slices. |
-| 2. Playlists | week 4 | 3 | Duration lives on playlist items. | Editor + CRUD only; infra already up. |
-| 3. Schedules | next 1.5 weeks (through mid-week 6) | 4.5 | Events point at a playlist. Overlap needs two events. | Wall-clock overlap plus screen-local TZ/DST. |
-| 4. Assign, refresh, play, ship | last 2.5 weeks (mid-week 6 through week 8) | 7.5 | Needs a paired screen, TZ, schedule, and cached assets. | Manifest + offline + deploy + path QA. |
-| **v1 total** | **8 weeks** | **24** | | 3 × 8. |
-
-### Parallel work (v1)
-
-**CMS web**
-
-1. Login/shell; image upload and processing status; **unsupported-file** message; New Screen (including expired/used code errors). Path-QA checklist started.
-2. Playlist create, order, duration (≥4s).
-3. One-time wall-clock event editor; overlap dialog (Adjust Times / Save Anyway). No TZ control on the event (trial had none).
-4. Assign schedule; run the vertical path on the shared env.
-
-**API / storage**
-
-1. Account/auth and tenancy; signed upload; worker; `unsupported_file`; issue/expire/consume pairing codes; store `time_zone`; heartbeat; deploy skeleton.
-2. Playlist CRUD; `unsupported_file` / not-ready if a non-image or non-ready id is added.
-3. Persist wall-clock events and `updated_at`; overlap of local ranges; last-updated-wins.
-4. Screen assignment; etag manifest (winning playlist + signed image URLs + this screen’s `time_zone`); production-like deploy.
-
-**Player**
-
-1. App shell; show pairing code; rotate on expiry; send device timezone; poll until Paired; idle heartbeat.
-2. Play an ordered list of images for given durations (fixture until the API exists).
-3. Map wall-clock start/end through **device local TZ** (DST included); last-updated-wins on a fixture schedule.
-4. Pull live manifest; disk-cache `ready` images; loop until local end; keep playing from cache if offline; replace cache on reconnect.
-
-**Why not finish screens before playlists:** pairing, code TTL, and timezone reporting can start immediately; **assignment** cannot, because the trial assigned a schedule that already pointed at a playlist.
-
-## Acceptance (v1)
-
-In one account:
-
-1. Launch the player, read the pairing code, submit it in New Screen, see Paired. An expired or reused code fails with an explicit error; a fresh code then pairs.
-2. Upload two images; wait until `ready`.
-3. Attempt a video or document upload; see the **unsupported-file** error; confirm it is not in the asset list.
-4. Put the images in a playlist (durations ≥ 4s).
-5. Create a one-time wall-clock window (same shape as 8:43–9:13 PM).
-6. Save an overlapping event; see the last-updated warning; Save Anyway.
-7. Assign that schedule to the paired screen; see the playlist on the player during that window **in the device’s local time**. After a playlist change, the player picks up the new manifest while online. If the network drops after a successful cache, playback continues from cache until local end.
-
-Not v1 acceptance: video playback, documents, folders, trash, tags, duplicate, timezone label on the event dialog.
-
-## Post-v1 roadmap (after the 24 person-weeks)
-
-Same three people. Sequence follows playback risk, then library UX. Estimates are rough.
-
-| Order | Slice | Calendar | Person-weeks | Why this order |
-|---|---|---|---|---|
-| 5. Video | Accept video; processing → `ready`; playlist default duration = native length (observed in the focused media test); player plays video; optional shorten + revert-to-original. | 2 weeks | 6 | Same upload → playlist → schedule → screen path as images. Highest playback risk after stills. |
-| 6. Documents | Accept docs; convert or render as timed stills with the **4s minimum** already in the playlist editor. | 1.5 weeks | 4.5 | Reuses image timing and playlist items. Depends on processing, not on folders. |
-| 7. Folders | Create/move folders; Organize places an asset in a folder. Flat list remains the default query. | 1 week | 3 | Library UX only. Does not change playback. After file types so folders are not image-only dead ends. |
-| 8. Asset actions | Move to Trash (soft-delete; playlist items that point at trashed assets are skipped or blocked). Then Duplicate Asset. Then Edit Tags (metadata only; no screen tag rules). Then asset-menu Playlists shortcut into the editor. | 1.5 weeks | 4.5 | Trash before duplicate so copies do not strand deleted files. Tags and the Playlists shortcut last: observed in the menu, unused in the trial, no playback dependency. |
-| **Post-v1 subtotal** | | **6 weeks** | **18** | After v1, not inside it. |
-
-Still later than this roadmap: Brief B, recurrence, nested playlists, content-tag playback rules, push-to-screens variants, unpair / move-account, direct assign of playlist or asset, apps as assets.
+That is roughly **six more weeks / 18 person-weeks**. Recurring schedules, nested playlists, and team permissions would need separate discovery and estimates. The first release deliberately proves the route that makes all of those later features useful.
