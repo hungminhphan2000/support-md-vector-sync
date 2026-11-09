@@ -37,6 +37,13 @@ Facts from SCIO only. Not Help Center copy. Not v1 commitments.
 - **Schedules:** The calendar displayed two overlapping `Lobby demo` events (8:43–9:13 and 8:44–9:14). Add Event can select an asset or playlist. Repeat offers daily, weekly, several monthly choices, weekdays, weekends, and Custom; Custom details were not inspected. Global Default Content says it fills gaps between schedule events. No new event was saved.
 - **Screens:** Add Screen asks for a pair code and offers a lowercase-code checkbox; Pair is disabled without a code. `Screen 1` appeared offline during this review and remained assigned to `Lobby demo schedule`. The editor offers Asset, Playlist, Schedule, and Stop Playing as content types, plus an Operational Schedule and advanced options such as Preload Assets in Playlist and Show Offline Indicator. No new screen was paired and no setting was saved.
 
+### Focused media test (9 Nov 2026; temporary assets cleaned up)
+
+- Created a one-page PDF and a six-second `.mov` containing only test text/color. Both uploaded through **Upload Files** and appeared as `Doc` and `Video` in Files/Assets. The PDF preview displayed its rendered page; the video preview played, and the browser video element reported six seconds. This verifies the successful upload/preview path for these two small samples, not every format or a failed-processing case.
+- Added both files to a separate temporary playlist. SCIO assigned the video **6 seconds**, matching its native length, and the one-page PDF **20 seconds**, matching the account's default item duration. The playlist total was **26 seconds**. Video duration was editable; its item options included mute, transition, item schedule, resume, and repeat controls. A multi-page document and the four-second minimum for document items were not tested.
+- Moved the temporary playlist and both test assets to Trash. Active views returned to **2 playlists** and **11 assets**. Existing `Lobby demo` was not edited.
+- Opened the installed macOS player, but its window rendered black and `Screen 1` still showed offline in CMS. This did not establish pairing, device playback, or offline-cache behavior; the earlier playback report remains the evidence for that path.
+
 ## Help Center (not trial)
 
 Cited where the trial did not show the behavior. These are product facts we design against, not SCIO screenshots.
@@ -49,7 +56,7 @@ Cited where the trial did not show the behavior. These are product facts we desi
 
 - **Processing:** “being processed” becomes `ready` or `failed`. A failed upload was not watched to completion.
 - **Event dialog:** v1 can omit a timezone label in the event form (matching the trial) while still evaluating playback in each screen’s local zone (Help Center).
-- Recurring rules, video native duration, and document-as-timed-still were not used in the trial.
+- Recurring rules were visible in the event editor but not saved. Video native duration and one-page PDF timing were verified only in the focused media test above.
 - **Pairing TTL:** Help Center shows a code on the player; it does not state expiry. v1 codes are single-use and expire; unused expiry was not observed.
 - **Refresh / offline:** the trial reported playback while online. Polling the manifest and playing a cached copy if the network drops are v1 design, not trial evidence.
 
@@ -58,8 +65,8 @@ Cited where the trial did not show the behavior. These are product facts we desi
 | Area | v1 | Later (see roadmap) |
 |---|---|---|
 | Image files | Upload, processing `processing` → `ready` \| `failed`, add to playlist | — |
-| Video files | Upload returns an **unsupported-file** error (type + “not in v1”). File is not stored as an asset. | Native duration as playlist default |
-| Document files | Same **unsupported-file** error. Not stored. | Timed stills, ≥4s floor |
+| Video files | Upload returns an **unsupported-file** error (type + “not in v1”). File is not stored as an asset. | Native duration as playlist default (observed with a six-second `.mov`) |
+| Document files | Same **unsupported-file** error. Not stored. | Timed stills (one-page PDF playlist item observed at the 20-second default); player playback and duration floor still unverified for docs |
 | Folders | Flat asset list | Organize / folder tree |
 | Duplicate Asset | Not built | Roadmap |
 | Edit Tags | Not built | Roadmap |
@@ -191,7 +198,7 @@ Same three people. Sequence follows playback risk, then library UX. Estimates ar
 
 | Order | Slice | Calendar | Person-weeks | Why this order |
 |---|---|---|---|---|
-| 5. Video | Accept video; processing → `ready`; playlist default duration = native length (Help Center; still unverified in trial); player plays video; optional shorten + revert-to-original. | 2 weeks | 6 | Same upload → playlist → schedule → screen path as images. Highest playback risk after stills. |
+| 5. Video | Accept video; processing → `ready`; playlist default duration = native length (observed in the focused media test); player plays video; optional shorten + revert-to-original. | 2 weeks | 6 | Same upload → playlist → schedule → screen path as images. Highest playback risk after stills. |
 | 6. Documents | Accept docs; convert or render as timed stills with the **4s minimum** already in the playlist editor. | 1.5 weeks | 4.5 | Reuses image timing and playlist items. Depends on processing, not on folders. |
 | 7. Folders | Create/move folders; Organize places an asset in a folder. Flat list remains the default query. | 1 week | 3 | Library UX only. Does not change playback. After file types so folders are not image-only dead ends. |
 | 8. Asset actions | Move to Trash (soft-delete; playlist items that point at trashed assets are skipped or blocked). Then Duplicate Asset. Then Edit Tags (metadata only; no screen tag rules). Then asset-menu Playlists shortcut into the editor. | 1.5 weeks | 4.5 | Trash before duplicate so copies do not strand deleted files. Tags and the Playlists shortcut last: observed in the menu, unused in the trial, no playback dependency. |
