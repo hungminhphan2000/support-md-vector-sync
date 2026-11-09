@@ -44,6 +44,12 @@ Facts from SCIO only. Not Help Center copy. Not v1 commitments.
 - Moved the temporary playlist and both test assets to Trash. Active views returned to **2 playlists** and **11 assets**. Existing `Lobby demo` was not edited.
 - Opened the installed macOS player, but its window rendered black and `Screen 1` still showed offline in CMS. This did not establish pairing, device playback, or offline-cache behavior; the earlier playback report remains the evidence for that path.
 
+### Web Player pairing and playback test (9 Nov 2026; test screen removed)
+
+- Opened the official [OptiSigns Web Player](https://www.optisigns.com/post/how-to-use-optisigns-with-browser) in a separate browser session. It displayed a six-character pair code. Submitted that code through **Add Screen** in the signed-in CMS; the player changed to **Paired** and CMS created a second screen.
+- Named the temporary screen `SCIO playback test - delete me`, selected content type **Playlist**, assigned the existing `Lobby demo` playlist, and saved. CMS marked the test screen **Online**. The Web Player visibly displayed each of the two existing image assets in turn. This verifies the live pairing → assignment → image-playback path for a direct playlist assignment. It does not verify scheduled playback, video/PDF playback on a player, pairing-code expiry/reuse, or offline cache.
+- Deleted only the temporary screen after the test. CMS returned to **1 screen** (`Screen 1`, offline). The installed macOS player still has a separate black-render/offline issue; this Web Player result does not resolve that device.
+
 ## Help Center (not trial)
 
 Cited where the trial did not show the behavior. These are product facts we design against, not SCIO screenshots.
