@@ -1,11 +1,11 @@
 source=github_actions
-ran_at=2026-11-17T07:05:29Z
-refresh_articles=101
-added=0
-updated=1
-skipped=100
+ran_at=2026-11-18T07:05:31Z
+refresh_articles=102
+added=1
+updated=0
+skipped=101
 failed=0
-removed_old=1
+removed_old=0
 completed_file_count=102
 in_progress_file_count=0
 failed_file_count=0
